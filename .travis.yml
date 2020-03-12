@@ -1,14 +1,18 @@
 sudo: required
+
 services:
   - docker
+
 env:
   global:
     - PATH=$PATH:${HOME}/google-cloud-sdk/bin
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+    - SHA=$(git rev-parse HEAD)
 
 cache:
   directories:
     - "$HOME/google-cloud-sdk/"
+    
 script:
   - sudo apt-get remove google-cloud-sdk
   - gcloud version || true
