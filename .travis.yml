@@ -4,13 +4,18 @@ cache:
     - "$HOME/google-cloud-sdk/"
 services:
   - docker
+env:
+  global:
+    - PATH=$PATH:${HOME}/google-cloud-sdk/bin
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
 before_install:
-  - PATH=$PATH:${HOME}/google-cloud-sdk/bin
-  - CLOUDSDK_CORE_DISABLE_PROMPTS=1
   - if [ ! -d ${HOME}/google-cloud-sdk ]; then
-    curl https://sdk.cloud.google.com | bash;
+    rm -rf $HOME/google-cloud-sdk;
+    curl https://sdk.cloud.google.com | bash > /dev/null;
     fi
-  - gcloud components install kubectl
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
   - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
   - gcloud auth activate-service-account --key-file service-account.json
   - gcloud config set project  multi-k8s-270721
