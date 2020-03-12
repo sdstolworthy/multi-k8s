@@ -2,12 +2,18 @@ sudo: required
 services:
   - docker
 before_install:
-  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - curl https://sdk.cloud.google.com | bash;
   - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud components update kubectl
   - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
   - gcloud auth activate-service-account --key-file service-account.json
   - gcloud config set project  multi-k8s-270721 
   - gcloud config set compute/zone us-west2-c
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - gcloud container clusters get-credentials multi-k8s
   
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
